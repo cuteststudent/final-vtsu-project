@@ -1,30 +1,23 @@
-let grid = [];
+let terrain;
 
-export function setup() {
-  grid = [
-    [3, 1, 0, 0, 0, 3, 1, 0, 0, 0],
-    [0, 1, 0, 0, 0, 3, 1, 0, 0, 0],
-    [2, 1, 2, 1, 1, 3, 1, 0, 0, 0],
-    [0, 1, 1, 1, 3, 3, 1, 0, 0, 0],
-    [3, 0, 0, 0, 0, 3, 1, 0, 0, 0],
-    [3, 1, 0, 0, 0, 3, 1, 0, 0, 0],
-    [0, 1, 0, 0, 0, 3, 1, 0, 0, 0],
-    [2, 1, 2, 1, 1, 3, 1, 0, 0, 0],
-    [0, 1, 1, 1, 3, 3, 1, 0, 0, 0],
-    [3, 0, 0, 0, 0, 3, 1, 0, 0, 0],
-  ]
-}
-
-function height(x, z) {
+export function height(x, z) {
   return noise(x, z)
 }
 
-export function draw() {
-  translate(0, -100, 0);
+export function drawTerrain() {
+  if (!terrain) {
+    makeTerrain();
+  }
+  model(terrain);
+}
+
+function makeTerrain() {
+  beginGeometry();
   stroke(0);
-  scale(50);
-  for (let x = 0; x < 5; x++) {
-    for (let z = 0; z < 5; z++) {
+  fill(0, 255, 0);
+
+  for (let x = 0; x < 1000; x++) {
+    for (let z = 0; z < 1000; z++) {
       push();
       beginShape();
       vertex(x, height(x, z), z);
@@ -35,4 +28,6 @@ export function draw() {
       pop();
     }
   }
+  terrain = endGeometry();
+  terrain.computeNormals();
 }

@@ -1,23 +1,32 @@
 import { drawGrid } from "@/utils/grid.js";
 import { drawAxes } from '@/utils/axes.js';
 import { vector } from "@/utils/vec3.js";
+import { drawTerrain, height as terrainHeight } from "./terrain.js";
 
 //We can use this to load textures or sounds
 export function preload() {
 
 }
 
-//Called once when program loads
+let font;
+
 export function setup() {
+    directionalLight(255, 255, 255, 1, 1, -1);
+    font = loadFont("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf");
 }
 
 let position = vector(0, 0, 0);
 
-// let move = vector(0, 0, 0);
-
 let moveForward = 0.5;
 
 let rotY = 0;
+
+let crashed = false;
+
+if (keyIsDown(32)) {
+
+}
+
 
 function plane() {
     push();
@@ -54,7 +63,6 @@ function plane() {
     pop();
 }
 
-
 //Called every frame
 export function draw(t, dt) {
 
@@ -64,8 +72,6 @@ export function draw(t, dt) {
         orbitControl(); //Enable mouse movement in the scene
         ambientLight(80, 80, 80);  //Add some ambient light to the scene
 
-        directionalLight(255, 255, 255, 1, 1, -1); //Add a white directional light
-
     }
 
     camera(0, -120, 500);
@@ -73,21 +79,34 @@ export function draw(t, dt) {
 
     push();
 
-    position.x += moveForward * sin(rotY) * 5;
+    //crashing
+    {
+        if (!crashed) {
 
-    position.z -= moveForward * cos(rotY) * 5
+            position.x += moveForward * sin(rotY) * 5;
 
-    rotY += ((map(keyIsDown(68), 0, 1, 0, 1) - map(keyIsDown(65), 0, 1, 0, 1)) * 2)
+            position.z -= moveForward * cos(rotY) * 5
 
-    position.y -= ((map(keyIsDown(83), 0, 1, 0, 1) - map(keyIsDown(87), 0, 1, 0, 1)) * 2)
+            rotY += ((map(keyIsDown(68), 0, 1, 0, 1) - map(keyIsDown(65), 0, 1, 0, 1)) * 2)
 
+            position.y -= ((map(keyIsDown(83), 0, 1, 0, 1) - map(keyIsDown(87), 0, 1, 0, 1)) * 2)
 
+        }
 
-    if (keyIsDown(68) && !keyIsDown(65)) {
-        rotateZ(25);
+        if (keyIsDown(82)) {
+            position = vector(0, 0, 0);
+            crashed = false;
+        }
     }
-    if (keyIsDown(65) && !keyIsDown(68)) {
-        rotateZ(-25);
+
+    //steering
+    {
+        if (keyIsDown(68) && !keyIsDown(65)) {
+            rotateZ(25);
+        }
+        if (keyIsDown(65) && !keyIsDown(68)) {
+            rotateZ(-25);
+        }
     }
 
     plane();
@@ -96,18 +115,34 @@ export function draw(t, dt) {
 
     push();
 
+    //more crashing
+    {
+        if (-position.y > terrainHeight(position.x / 50, position.z / 50) / 50) {
+            console.log("you crashed");
+            push();
+            crashed = true;
+            translate(-600, -800, 1500);
+            textFont(font);
+            textSize(36);
+            text("you crashed", 500, 500, 500, 800);
+            pop();
+        }
 
-    scale(10);
 
-    rotateX(((map(keyIsDown(83), 0, 1, 0, 1) - map(keyIsDown(87), 0, 1, 0, 1)) * -15))
+        scale(10);
 
+        if (!crashed) {
 
-    rotateY(rotY);
+            rotateX(((map(keyIsDown(83), 0, 1, 0, 1) - map(keyIsDown(87), 0, 1, 0, 1)) * -15))
 
-    translate(-position.x, position.y, -position.z);
+            rotateY(rotY);
 
-    drawGrid();
+        }
+    }
 
+    translate(-position.x - 25000, position.y, -position.z - 25000);
+
+    scale(50);
+    drawTerrain();
     pop();
-    drawAxes();
 }
