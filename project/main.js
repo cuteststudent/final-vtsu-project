@@ -23,11 +23,6 @@ let rotY = 0;
 
 let crashed = false;
 
-if (keyIsDown(32)) {
-
-}
-
-
 function plane() {
     push();
     rotateY(-90);
@@ -71,7 +66,6 @@ export function draw(t, dt) {
         background(30, 30, 30); //Clear the background to dark grey 
         orbitControl(); //Enable mouse movement in the scene
         ambientLight(80, 80, 80);  //Add some ambient light to the scene
-
     }
 
     camera(0, -120, 500);
@@ -79,69 +73,70 @@ export function draw(t, dt) {
 
     push();
 
-    //crashing
-    {
-        if (!crashed) {
+    if (!crashed) {
+        moveForward = moveForward * .999;
 
-            position.x += moveForward * sin(rotY) * 5;
-
-            position.z -= moveForward * cos(rotY) * 5
-
-            rotY += ((map(keyIsDown(68), 0, 1, 0, 1) - map(keyIsDown(65), 0, 1, 0, 1)) * 2)
-
-            position.y -= ((map(keyIsDown(83), 0, 1, 0, 1) - map(keyIsDown(87), 0, 1, 0, 1)) * 2)
-
+        if (keyIsDown(32) && moveForward <= 0.9) {
+            moveForward = moveForward + 1.5
         }
 
+        //Control & physics
+        position.x += moveForward * sin(rotY) * 5;
+
+        position.z -= moveForward * cos(rotY) * 5
+
+        rotY += ((map(keyIsDown(68), 0, 1, 0, 1) - map(keyIsDown(65), 0, 1, 0, 1)) * 2)
+
+        position.y -= ((map(keyIsDown(83), 0, 1, 0, 1) - map(keyIsDown(87), 0, 1, 0, 1)) * 2)
+
+        //Yaw Effect
+        {
+            if (keyIsDown(68) && !keyIsDown(65)) {
+                rotateZ(25);
+            }
+            if (keyIsDown(65) && !keyIsDown(68)) {
+                rotateZ(-25);
+            }
+        }
+
+        //Detect Crash
+        if (-position.y > terrainHeight(position.x / 50, position.z / 50) / 50) {
+            console.log("you crashed");
+            crashed = true;
+        }
+
+    } else {
+        //Crashed!
+
+        //Print crashed
+        push();
+        translate(-600, -800, 1500);
+        textFont(font);
+        textSize(36);
+        text("you crashed", 500, 500, 500, 800);
+        pop();
+
+        //Check for reset
         if (keyIsDown(82)) {
             position = vector(0, 0, 0);
             crashed = false;
         }
     }
 
-    //steering
-    {
-        if (keyIsDown(68) && !keyIsDown(65)) {
-            rotateZ(25);
-        }
-        if (keyIsDown(65) && !keyIsDown(68)) {
-            rotateZ(-25);
-        }
-    }
-
     plane();
-
     pop();
 
-    push();
-
-    //more crashing
-    {
-        if (-position.y > terrainHeight(position.x / 50, position.z / 50) / 50) {
-            console.log("you crashed");
-            push();
-            crashed = true;
-            translate(-600, -800, 1500);
-            textFont(font);
-            textSize(36);
-            text("you crashed", 500, 500, 500, 800);
-            pop();
-        }
-
-
-        scale(10);
-
-        if (!crashed) {
-
-            rotateX(((map(keyIsDown(83), 0, 1, 0, 1) - map(keyIsDown(87), 0, 1, 0, 1)) * -15))
-
-            rotateY(rotY);
-
-        }
+    //aim the camera based on input
+    if (!crashed) {
+        rotateX(((map(keyIsDown(83), 0, 1, 0, 1) - map(keyIsDown(87), 0, 1, 0, 1)) * -15))
+        rotateY(rotY);
     }
 
-    translate(-position.x - 25000, position.y, -position.z - 25000);
 
+    //Draw Terrain
+    push();
+    scale(10);
+    translate(-position.x - 2500, position.y, -position.z - 2500);
     scale(50);
     drawTerrain();
     pop();
