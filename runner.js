@@ -1,4 +1,5 @@
 import p5 from "p5";
+import "p5/lib/addons/p5.sound";
 import * as axes from "./utils/axes.js";
 import * as activity from "./project/main.js";
 import showTime from "@/utils/timer";

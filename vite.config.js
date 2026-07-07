@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import inject from '@rollup/plugin-inject';
 import path from 'path'
 
 export default defineConfig({
@@ -14,4 +15,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './'),
     },
   },
+  plugins: [
+    inject({
+      p5: 'p5',
+    }),
+  ],
 });
