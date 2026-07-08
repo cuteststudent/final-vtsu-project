@@ -15,13 +15,24 @@ export function setup() {
     font = loadFont("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf");
 }
 
-let position = vector(0, 0, 0);
+function reset() {
+    position = vector(0, 400, 0);
+    velocity = vector(5, 0, 0);
+    moveForward = 0.5;
+    rot = vector(0, 0, 0);
+    crashed = false;
+}
+
+let position = vector(0, 400, 0);
+
+let velocity = vector(5, 0, 0);
 
 let moveForward = 0.5;
 
-let rotY = 0;
+let rot = vector(0, 0, 0);
 
 let crashed = false;
+
 
 function plane() {
     push();
@@ -61,11 +72,13 @@ function plane() {
 //Called every frame
 export function draw(t, dt) {
 
+    orbitControl();
+
     //lighting
     {
         background(30, 30, 30); //Clear the background to dark grey 
-        orbitControl(); //Enable mouse movement in the scene
-        ambientLight(80, 80, 80);  //Add some ambient light to the scene
+        // orbitControl(); //Enable mouse movement in the scene
+        ambientLight(180, 180, 180);  //Add some ambient light to the scene
     }
 
     camera(0, -120, 500);
@@ -80,14 +93,36 @@ export function draw(t, dt) {
             moveForward = moveForward + 1.5
         }
 
+
         //Control & physics
-        position.x += moveForward * sin(rotY) * 5;
 
-        position.z -= moveForward * cos(rotY) * 5
+        velocity.x = moveForward * sin(rot.y) * 5
 
-        rotY += ((map(keyIsDown(68), 0, 1, 0, 1) - map(keyIsDown(65), 0, 1, 0, 1)) * 2)
+        velocity.z = moveForward * cos(rot.y) * 5
 
-        position.y -= ((map(keyIsDown(83), 0, 1, 0, 1) - map(keyIsDown(87), 0, 1, 0, 1)) * 2)
+        // position.x += moveForward * sin(rot.y) * 5;
+
+        position.x += velocity.x
+
+        position.z -= velocity.z
+
+        rot.y += ((map(keyIsDown(68), 0, 1, 0, 1) - map(keyIsDown(65), 0, 1, 0, 1)) * 2)
+
+        // position.y -= ((map(keyIsDown(83), 0, 1, 0, 1) - map(keyIsDown(87), 0, 1, 0, 1)) * 2)
+
+        position.y += velocity.y
+
+        velocity.y = tan(rot.x) * moveForward * 5
+
+
+
+        // pitch
+
+        rot.x += (map(keyIsDown(UP_ARROW), 0, 1, 0, 1) - map(keyIsDown(DOWN_ARROW), 0, 1, 0, 1))
+
+
+        moveForward -= sin(rot.x) * 0.05
+
 
         //Yaw Effect
         {
@@ -100,7 +135,7 @@ export function draw(t, dt) {
         }
 
         //Detect Crash
-        if (-position.y > terrainHeight(position.x / 50, position.z / 50) / 50) {
+        if (-position.y > terrainHeight(position.x / 500, position.z / 500) / 50) {
             console.log("you crashed");
             crashed = true;
         }
@@ -118,8 +153,7 @@ export function draw(t, dt) {
 
         //Check for reset
         if (keyIsDown(82)) {
-            position = vector(0, 0, 0);
-            crashed = false;
+            reset();
         }
     }
 
@@ -127,10 +161,8 @@ export function draw(t, dt) {
     pop();
 
     //aim the camera based on input
-    if (!crashed) {
-        rotateX(((map(keyIsDown(83), 0, 1, 0, 1) - map(keyIsDown(87), 0, 1, 0, 1)) * -15))
-        rotateY(rotY);
-    }
+    // rotateX(rot.x)
+    // rotateY(rot.y);a
 
 
     //Draw Terrain
