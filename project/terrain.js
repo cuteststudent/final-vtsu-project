@@ -1,7 +1,7 @@
 let terrain;
 
 export function height(x, z) {
-  return noise(x, z)
+  return noise(x / 10, z / 10) * 10
 }
 
 export function drawTerrain() {
@@ -9,6 +9,8 @@ export function drawTerrain() {
     makeTerrain();
   }
   model(terrain);
+  // fill(0, 0, 255);
+  // box(100, 1, 100);
 }
 
 function makeTerrain() {
@@ -26,6 +28,18 @@ function makeTerrain() {
       vertex(x, height(x, z + 1), z + 1);
       endShape();
       pop();
+
+      push();
+      noStroke();
+      fill(0, 0, 255);
+      beginShape();
+      vertex(x, 6.15, z);
+      vertex(x + 1, 6.15, z);
+      vertex(x + 1, 6.15, z + 1);
+      vertex(x, 6.15, z + 1);
+      endShape();
+      pop();
+
     }
   }
   terrain = endGeometry();
