@@ -11,7 +11,8 @@
         "global.d.ts": true,
         "jsconfig.json": true,
         "activityChooser.js": true,
-        "README.md": true
+        "README.md": true,
+        "docs": true
     },
     "editor.quickSuggestions": {
         "comments": "off",

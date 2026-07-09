@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VTSU - 3D Technology Summer Institute - 2026</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #1a1a1a;
+      overflow: hidden;
+      color: white
+    }
+
+    #header {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      background: transparent;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #error-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      color: #ff5555;
+      font-family: monospace;
+      font-size: 14px;
+      padding: 2rem;
+      z-index: 9999;
+      white-space: pre-wrap;
+      overflow: auto;
+    }
+
+    #error-overlay.visible {
+      display: block;
+    }
+
+    #error-overlay h2 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #ff8888;
+    }
+
+    #currentSourceLine {
+      font-family: monospace;
+      font-weight: bold;
+      display: block;
+      padding: 20px;
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-QEJWVRLO.js"></script>
+</head>
+
+<body>
+  <div id="header">
+    <h1>My Project</h1>
+    <div id="timeDisplay" style="display: none;">
+      Time: <span id="timeText">TIME</span> s
+    </div>
+    <div id="random">
+      Seed: <input type="number" id="seed" style="width: 40px">
+    </div>
+  </div>
+  <div id="error-overlay">
+    <h2>⚠ Error</h2><span id="error-message"></span>
+  </div>
+
+  <script>
+    function showError(msg) {
+      document.getElementById("error-message").textContent = msg;
+      document.getElementById("error-overlay").classList.add("visible");
+    }
+
+    // Catch runtime errors (e.g. typos inside draw())
+    window.onerror = (msg, src, line, col) => {
+      showError(`${msg}\n\n${src}\n\nat line ${line}, column ${col}`);
+    };
+
+    // Catch unhandled promise rejections
+    window.onunhandledrejection = (e) => {
+      showError(e.reason?.stack || String(e.reason));
+    };
+  </script>
+
+
+
+</body>
+
+</html>
