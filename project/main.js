@@ -3,7 +3,16 @@ import { drawAxes } from '@/utils/axes.js';
 import { vector } from "@/utils/vec3.js";
 import { drawTerrain, height as terrainHeight } from "./terrain.js";
 
-//We can use this to load textures or sounds
+let position = vector(0, 400, 0);;
+let velocity = vector(5, 0, 0);;
+let moveForward = 0.5;;
+let rot = vector(0, 0, 0);;
+let crashed = false;;
+let n = 0;
+
+
+reset();
+
 export function preload() {
 
 }
@@ -23,15 +32,8 @@ function reset() {
     crashed = false;
 }
 
-let position = vector(0, 400, 0);
 
-let velocity = vector(5, 0, 0);
 
-let moveForward = 0.5;
-
-let rot = vector(0, 0, 0);
-
-let crashed = false;
 
 
 function plane() {
@@ -39,7 +41,7 @@ function plane() {
     rotateY(-90);
     fill(255, 255, 255)
     stroke(0, 0, 0);
-    strokeWeight(10);
+    strokeWeight(2.5);
 
     //plane
     beginShape();
@@ -69,9 +71,9 @@ function plane() {
     pop();
 }
 
-//Called every frame
-export function draw(t, dt) {
 
+
+export function draw(t, dt) {
     orbitControl();
 
     //lighting
@@ -89,8 +91,8 @@ export function draw(t, dt) {
     if (!crashed) {
         moveForward = moveForward * .999;
 
-        if (keyIsDown(32) && moveForward <= 0.9) {
-            moveForward = moveForward + 1.5
+        if (keyIsDown(32) && moveForward <= 1.9) {
+            moveForward = moveForward + 3
         }
 
 
@@ -99,8 +101,6 @@ export function draw(t, dt) {
         velocity.x = moveForward * sin(rot.y) * 5
 
         velocity.z = moveForward * cos(rot.y) * 5
-
-        // position.x += moveForward * sin(rot.y) * 5;
 
         position.x += velocity.x
 
@@ -118,7 +118,7 @@ export function draw(t, dt) {
 
         // pitch
 
-        rot.x += (map(keyIsDown(UP_ARROW), 0, 1, 0, 1) - map(keyIsDown(DOWN_ARROW), 0, 1, 0, 1))
+        rot.x += (map(keyIsDown(87), 0, 1, 0, 1) - map(keyIsDown(83), 0, 1, 0, 1))
 
 
         moveForward -= sin(rot.x) * 0.05
@@ -143,14 +143,6 @@ export function draw(t, dt) {
     } else {
         //Crashed!
 
-        //Print crashed
-        push();
-        translate(-600, -800, 1500);
-        textFont(font);
-        textSize(36);
-        text("you crashed", 500, 500, 500, 800);
-        pop();
-
         //Check for reset
         if (keyIsDown(82)) {
             reset();
@@ -161,8 +153,8 @@ export function draw(t, dt) {
     pop();
 
     //aim the camera based on input
-    // rotateX(rot.x)
-    // rotateY(rot.y);a
+    rotateX(rot.x);
+    rotateY(rot.y);
 
 
     //Draw Terrain
@@ -171,5 +163,36 @@ export function draw(t, dt) {
     translate(-position.x - 2500, position.y, -position.z - 2500);
     scale(50);
     drawTerrain();
+    scale(2);
+    translate(0, -50, 0);
+    noStroke();
+    fill(64, 64, 64);
+    translate(15, 51, 15);
+    scale(0.02);
+    stroke(5);
+    sphere(20, 200, 20);
+    translate(50, 0, 0);
+    sphere(20, 200, 20);
+    // while (n <= 44) {
+    //     push();
+    //     colorMode(HSL, 360, 100, 100);
+    //     fill((Math.sin(0.5 * t) * 200) + n, 100, 75);
+    //     translate(0, Math.sin(n) * 200, Math.cos(n) * 200);
+    //     sphere(50);
+    //     n = n + 1;
+    //     pop();
+    // }
     pop();
+    if (crashed) {
+        //Print crashed
+        resetMatrix();
+        push();
+        translate(-300, -300, 260);
+        scale(.5)
+        textFont(font);
+        textSize(36);
+        text("you crashed", 500, 500, 500, 800);
+        pop();
+
+    }
 }
