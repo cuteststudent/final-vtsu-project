@@ -135,7 +135,7 @@ export function draw(t, dt) {
         }
 
         //Detect Crash
-        if (-position.y > terrainHeight(position.x / 500, position.z / 500) / 50) {
+        if (-position.y > terrainHeight(position.x * 1000, position.z * 1000) / 50) {
             console.log("you crashed");
             crashed = true;
         }
@@ -167,22 +167,13 @@ export function draw(t, dt) {
     translate(0, -50, 0);
     noStroke();
     fill(64, 64, 64);
-    translate(15, 51, 15);
-    scale(0.02);
+    translate(15, 49, 15);
+    scale(0.01);
     stroke(5);
-    sphere(20, 200, 20);
-    translate(50, 0, 0);
-    sphere(20, 200, 20);
-    // while (n <= 44) {
-    //     push();
-    //     colorMode(HSL, 360, 100, 100);
-    //     fill((Math.sin(0.5 * t) * 200) + n, 100, 75);
-    //     translate(0, Math.sin(n) * 200, Math.cos(n) * 200);
-    //     sphere(50);
-    //     n = n + 1;
-    //     pop();
-    // }
+    noStroke();
+    torus(100, 25, 50, 50);
     pop();
+
     if (crashed) {
         //Print crashed
         resetMatrix();
