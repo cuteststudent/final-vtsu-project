@@ -11,6 +11,7 @@ let crashed = false;;
 let n = 0;
 let swoosh;
 let wind;
+let vol;
 
 reset();
 
@@ -83,7 +84,9 @@ export function draw(t, dt) {
     orbitControl();
 
     getAudioContext().resume()
+    wind.setVolume(velocity.mag() / 10);
     wind.play();
+
 
     //lighting
     {
