@@ -17,9 +17,9 @@ reset();
 
 export function preload() {
     soundFormats('mp3')
-    swoosh = loadSound('./project/swoosh.mp3')
+    swoosh = loadSound('swoosh.mp3')
     swoosh.playMode("untilDone")
-    wind = loadSound('./project/wind.mp3')
+    wind = loadSound('wind.mp3')
     wind.setLoop(true);
     wind.playMode("untilDone")
 };
