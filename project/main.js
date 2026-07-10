@@ -9,13 +9,19 @@ let moveForward = 0.5;;
 let rot = vector(0, 0, 0);;
 let crashed = false;;
 let n = 0;
-
+let swoosh;
+let wind;
 
 reset();
 
 export function preload() {
-
-}
+    soundFormats('mp3')
+    swoosh = loadSound('./project/swoosh.mp3')
+    swoosh.playMode("untilDone")
+    wind = loadSound('./project/wind.mp3')
+    wind.setLoop(true);
+    wind.playMode("untilDone")
+};
 
 let font;
 
@@ -76,6 +82,9 @@ function plane() {
 export function draw(t, dt) {
     orbitControl();
 
+    getAudioContext().resume()
+    wind.play();
+
     //lighting
     {
         background(30, 30, 30); //Clear the background to dark grey 
@@ -92,6 +101,8 @@ export function draw(t, dt) {
         moveForward = moveForward * .999;
 
         if (keyIsDown(32) && moveForward <= 1.9) {
+            getAudioContext().resume()
+            swoosh.play();
             moveForward = moveForward + 3
         }
 
