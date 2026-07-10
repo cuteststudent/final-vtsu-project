@@ -8,26 +8,23 @@ let velocity = vector(5, 0, 0);;
 let moveForward = 0.5;;
 let rot = vector(0, 0, 0);;
 let crashed = false;;
-let n = 0;
 let swoosh;
 let wind;
-let vol;
 
 reset();
 
 export function preload() {
     soundFormats('mp3')
-    swoosh = loadSound('swoosh.mp3')
-    swoosh.playMode("untilDone")
-    wind = loadSound('wind.mp3')
+    swoosh = loadSound('swoosh.mp3');
+    swoosh.playMode("untilDone");
+    wind = loadSound('wind.mp3');
     wind.setLoop(true);
-    wind.playMode("untilDone")
+    wind.playMode("untilDone");
 };
 
 let font;
 
 export function setup() {
-    directionalLight(255, 255, 255, 1, 1, -1);
     font = loadFont("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf");
 }
 
@@ -38,10 +35,6 @@ function reset() {
     rot = vector(0, 0, 0);
     crashed = false;
 }
-
-
-
-
 
 function plane() {
     push();
@@ -78,8 +71,6 @@ function plane() {
     pop();
 }
 
-
-
 export function draw(t, dt) {
     orbitControl();
 
@@ -87,11 +78,9 @@ export function draw(t, dt) {
     wind.setVolume(velocity.mag() / 10);
     wind.play();
 
-
     //lighting
     {
         background(30, 30, 30); //Clear the background to dark grey 
-        // orbitControl(); //Enable mouse movement in the scene
         ambientLight(180, 180, 180);  //Add some ambient light to the scene
     }
 
@@ -176,6 +165,7 @@ export function draw(t, dt) {
     scale(10);
     translate(-position.x - 2500, position.y, -position.z - 2500);
     scale(50);
+    directionalLight(255, 255, 255, 100, 1, -100);
     drawTerrain();
     scale(2);
     translate(0, -50, 0);

@@ -21,6 +21,7 @@ function makeTerrain() {
   for (let x = 0; x < 100; x++) {
     for (let z = 0; z < 100; z++) {
       push();
+      noStroke();
       beginShape();
       vertex(x, height(x, z), z);
       vertex(x + 1, height(x + 1, z), z);
